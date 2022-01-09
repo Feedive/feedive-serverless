@@ -1,0 +1,14 @@
+{
+  "serviceId": "qcpj7g",
+  "projectId": "qcpj7g_project",
+  "service": {
+    "serviceId": "qcpj7g",
+    "name": "Feedive",
+    "description": "",
+    "owner": true
+  },
+  "main": "index.js",
+  "watch": [
+    "**/*.js"
+  ]
+}
