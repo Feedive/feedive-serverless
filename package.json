@@ -1,0 +1,38 @@
+{
+  "name": "serverless",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Feedive, An Info Aggregation Reader",
+  "keywords": [
+    "rss",
+    "serverless"
+  ],
+  "homepage": "https://github.com/Feedive/feedive-serverless#readme",
+  "bugs": {
+    "url": "https://github.com/Feedive/feedive-serverless/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Feedive/feedive-serverless.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "fix": "eslint src --ext .ts --fix",
+    "lint": "eslint src --ext .ts",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
+    "lint-staged": "^12.1.7",
+    "prettier": "^2.5.1",
+    "sort-package-json": "^1.53.1",
+    "typescript": "^4.5.4"
+  }
+}
