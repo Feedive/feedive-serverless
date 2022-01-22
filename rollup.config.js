@@ -9,4 +9,8 @@ export default {
     exports: 'auto',
   },
   plugins: [typescript({ composite: false })],
+  watch: {
+    include: 'src/**',
+    clearScreen: false,
+  },
 };
