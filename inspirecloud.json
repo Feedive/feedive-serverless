@@ -7,8 +7,6 @@
     "description": "",
     "owner": true
   },
-  "main": "index.js",
-  "watch": [
-    "**/*.js"
-  ]
+  "main": "./build/index.js",
+  "watch": ["**/*.ts"]
 }
