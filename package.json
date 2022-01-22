@@ -18,8 +18,8 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "inspirecloud dev",
+    "deploy": "rollup -c && inspirecloud deploy",
+    "dev": "rollup -cw & inspirecloud dev",
     "fix": "eslint src --ext .ts --fix",
     "lint": "eslint src --ext .ts",
     "prepare": "husky install"
