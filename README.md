@@ -1,3 +1,3 @@
 # Feedive Serverless
 
-TODO
+Feedive, An Info Aggregation Reader
