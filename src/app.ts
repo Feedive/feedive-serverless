@@ -1,8 +1,8 @@
-import Koa from 'koa';
+import { Server } from './wrap-http';
 
-const app = new Koa();
-app.use(async (ctx) => {
-  ctx.body = 'Hello World';
+const app = new Server();
+app.route('ALL', '/', async () => {
+  return { body: 'Hello, World!' };
 });
 
 export default app;
