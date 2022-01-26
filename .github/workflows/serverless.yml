@@ -10,14 +10,18 @@ on:
       - main
       - dev
 jobs:
-  docs:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Setup environment
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - name: Setup node
         uses: actions/setup-node@v2
         with:
           cache: 'pnpm'
@@ -26,8 +30,8 @@ jobs:
         run: pnpm install
       - name: Build project
         run: pnpm build
-      - name: Deploy to ByteInspire
-        uses: byteinspire/cloud-project-deployer-action@v1.0.2
+      - name: Deploy project
+        uses: byteinspire/cloud-project-deployer-action@v1
         with:
           service-id: '${{ secrets.SERVICE_ID }}'
           token: '${{ secrets.ACCESS_TOKEN }}'
