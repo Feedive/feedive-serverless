@@ -1,3 +1,5 @@
+/.git/
+
 node_modules/
 
 lerna-debug.log*
@@ -6,7 +8,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+/.github/
 /.husky/
+/src/
 /.eslintrc.json
 /.gitignore
 /.inspirecloud.service.conf
