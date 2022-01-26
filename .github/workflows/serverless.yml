@@ -1,0 +1,33 @@
+name: Serverless CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup environment
+        uses: actions/setup-node@v2
+        with:
+          cache: 'pnpm'
+          node-version: '12'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build project
+        run: pnpm build
+      - name: Deploy to ByteInspire
+        uses: byteinspire/cloud-project-deployer-action@v1.0.2
+        with:
+          service-id: '${{ secrets.SERVICE_ID }}'
+          token: '${{ secrets.ACCESS_TOKEN }}'

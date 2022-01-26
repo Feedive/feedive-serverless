@@ -18,6 +18,7 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
+    "build": "rollup -c",
     "deploy": "rollup -c && inspirecloud deploy",
     "dev": "rollup -cw & inspirecloud dev",
     "fix": "eslint src --ext .ts --fix",
