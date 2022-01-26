@@ -31,7 +31,7 @@ jobs:
       - name: Build project
         run: pnpm build
       - name: Deploy project
-        uses: byteinspire/cloud-project-deployer-action@v1.0.2
+        uses: byteinspire/cloud-project-deployer-action@v1
         with:
           service-id: '${{ secrets.SERVICE_ID }}'
           token: '${{ secrets.ACCESS_TOKEN }}'
