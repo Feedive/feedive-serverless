@@ -1,3 +1,5 @@
 import app from './app';
 
-export default app.callback();
+const callback = app.callback();
+
+export { callback as default };
