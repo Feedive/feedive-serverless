@@ -9,4 +9,4 @@ const handler: Handler = async () => {
   };
 };
 
-export default handler;
+export { handler as default };

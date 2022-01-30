@@ -36,6 +36,8 @@
     "@types/type-is": "^1.6.3",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
+    "axios": "^0.25.0",
+    "axios-retry": "^3.2.4",
     "eslint": "^8.7.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -50,5 +52,9 @@
     "co-body": "^6.1.0",
     "formidable": "^2.0.1",
     "type-is": "^1.6.18"
+  },
+  "peerDependencies": {
+    "axios": "^0.25.0",
+    "axios-retry": "^3.2.4"
   }
 }
