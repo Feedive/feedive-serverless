@@ -2,7 +2,14 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const typescript = require('@rollup/plugin-typescript');
 
 export default {
-  external: ['axios', 'axios-retry', 'co-body', 'formidable', 'type-is'],
+  external: [
+    'axios',
+    'axios-retry',
+    'cheerio',
+    'co-body',
+    'formidable',
+    'type-is',
+  ],
   input: './src/index.ts',
   output: {
     file: './build/index.js',
