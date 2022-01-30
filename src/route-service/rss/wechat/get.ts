@@ -1,3 +1,4 @@
+import cheerio from 'cheerio';
 import { type Handler } from '../../../wrap-http';
 import retrieveWechatItem from '../../../api-persistence/retrieve-wechat-item';
 import retrieveWechatList from '../../../api-persistence/retrieve-wechat-list';
@@ -10,7 +11,9 @@ const handler: Handler = async (req) => {
   const wechatItems = await Promise.all(
     wechatList.items.map(async (item) => {
       try {
-        const description = await retrieveWechatItem(item.link);
+        const content = await retrieveWechatItem(item.link);
+        const $ = cheerio.load(content);
+        const description = $('#js_content').html()?.trim();
         return {
           ...item,
           description,
