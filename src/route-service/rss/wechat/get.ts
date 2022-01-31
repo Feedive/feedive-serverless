@@ -13,6 +13,11 @@ const handler: Handler = async (req) => {
       try {
         const content = await retrieveWechatItem(item.link);
         const $ = cheerio.load(content);
+        for (const img of $('img')) {
+          if (!$(img).attr('src')) {
+            $(img).attr('src', $(img).attr('data-src'));
+          }
+        }
         const description = $('#js_content').html()?.trim();
         return {
           ...item,
