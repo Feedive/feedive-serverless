@@ -7,6 +7,7 @@ export default {
     'axios-retry',
     'cheerio',
     'co-body',
+    'feed',
     'formidable',
     'type-is',
   ],

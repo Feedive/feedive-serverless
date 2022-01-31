@@ -51,6 +51,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
     "co-body": "^6.1.0",
+    "feed": "^4.2.2",
     "formidable": "^2.0.1",
     "type-is": "^1.6.18"
   },

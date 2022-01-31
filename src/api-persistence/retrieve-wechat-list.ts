@@ -1,3 +1,4 @@
+import { type FeedOptions, type Item } from 'feed';
 import instance from './instance';
 
 interface Data {
@@ -14,33 +15,20 @@ interface Data {
   }[];
 }
 
-interface Channel {
-  title: string;
-  description: string;
-  link: string;
-  items: {
-    title: string;
-    description: string;
-    link: string;
-    pubDate: string;
-    guid: string;
-  }[];
-}
-
-const handler = async (id: string): Promise<Channel> => {
+const handler = async (
+  id: string,
+): Promise<FeedOptions & { items: Item[] }> => {
   try {
     const url = `https://api.feeddd.org/feeds/${id}/json`;
     const response = await instance.get<Data>(url);
     return {
+      id: response.data.home_page_url,
       title: response.data.title,
-      description: '',
-      link: response.data.home_page_url,
+      copyright: `Copyright © ${new Date().getFullYear()} Tencent`,
       items: response.data.items.slice(0, 5).map((item) => ({
         title: item.title,
-        description: '',
         link: item.url,
-        pubDate: new Date(item.date_modified).toUTCString(),
-        guid: item.id,
+        date: new Date(item.date_modified),
       })),
     };
   } catch {
