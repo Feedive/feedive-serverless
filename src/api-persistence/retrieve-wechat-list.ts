@@ -22,8 +22,11 @@ const handler = async (
     const url = `https://api.feeddd.org/feeds/${id}/json`;
     const response = await instance.get<Data>(url);
     return {
-      id: response.data.home_page_url,
+      id: 'wechat-' + id,
       title: response.data.title,
+      generator: 'https://github.com/Feedive/feedive-serverless',
+      link: response.data.home_page_url,
+      description: '微信公众号：' + response.data.title,
       copyright: `Copyright © ${new Date().getFullYear()} Tencent`,
       items: response.data.items.slice(0, 5).map((item) => ({
         title: item.title,
