@@ -19,6 +19,6 @@ const instance = axios.create({
   httpsAgent: httpsAgent,
 });
 
-axiosRetry(instance);
+axiosRetry(instance as Parameters<typeof axiosRetry>[0]);
 
 export { instance as default };
