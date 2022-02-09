@@ -17,18 +17,20 @@ interface Data {
 
 const handler = async (
   id: string,
-): Promise<FeedOptions & { items: Item[] }> => {
+): Promise<{ summary: FeedOptions; list: Item[] }> => {
   try {
     const url = `https://api.feeddd.org/feeds/${id}/json`;
     const response = await instance.get<Data>(url);
     return {
-      id: 'wechat-' + id,
-      title: response.data.title,
-      generator: 'https://github.com/Feedive/feedive-serverless',
-      link: response.data.home_page_url,
-      description: '微信公众号：' + response.data.title,
-      copyright: `Copyright © ${new Date().getFullYear()} Tencent`,
-      items: response.data.items.slice(0, 5).map((item) => ({
+      summary: {
+        id: 'wechat-' + id,
+        title: response.data.title,
+        generator: 'https://github.com/Feedive/feedive-serverless',
+        link: response.data.home_page_url,
+        description: '微信公众号：' + response.data.title,
+        copyright: `Copyright © ${new Date().getFullYear()} Tencent`,
+      },
+      list: response.data.items.slice(0, 5).map((item) => ({
         title: item.title,
         link: item.url,
         date: new Date(item.date_modified),
