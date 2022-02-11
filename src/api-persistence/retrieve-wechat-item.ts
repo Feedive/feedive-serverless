@@ -21,7 +21,7 @@ const handler = async (item: Item): Promise<Item> => {
       description: description || '',
     };
   } catch {
-    return item;
+    throw new Error(`Cannot Retrieve Wechat Item`);
   }
 };
 
