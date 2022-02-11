@@ -1,4 +1,5 @@
-import { type FeedOptions } from 'feed';
+import cheerio from 'cheerio';
+import { type Item } from 'feed';
 import instance from './instance';
 
 interface User {
@@ -29,7 +30,7 @@ interface User {
   badge?: Record<string, number>;
 }
 
-interface Status {
+interface Mblog {
   visible: {
     type: number;
     list_id: number;
@@ -43,43 +44,14 @@ interface Status {
   version?: number;
   show_additional_indication: number;
   text: string;
-  textLength?: number;
+  textLength: number;
   source: string;
   favorited: boolean;
   pic_ids: string[];
   pic_types: string;
-  pic_focus_point?: {
-    focus_point: {
-      left: number;
-      top: number;
-      width: number;
-      height: number;
-    };
-    pic_id: string;
-  }[];
-  falls_pic_focus_point?: {
-    focus_point: {
-      left: number;
-      top: number;
-      width: number;
-      height: number;
-    };
-    pic_id: string;
-  }[];
-  pic_rectangle_object?: {
-    rectangle_objects: {
-      left: number;
-      top: number;
-      width: number;
-      height: number;
-      type: number;
-    };
-    pic_id: string;
-  }[];
-  pic_flag?: number;
-  thumbnail_pic?: string;
-  bmiddle_pic?: string;
-  original_pic?: string;
+  thumbnail_pic: string;
+  bmiddle_pic: string;
+  original_pic: string;
   is_paid: boolean;
   mblog_vip_type: number;
   user: User;
@@ -87,7 +59,7 @@ interface Status {
   picStatus?: string;
   pid?: number;
   pidstr?: string;
-  retweeted_status?: Status;
+  retweeted_status?: Mblog;
   reposts_count: number;
   comments_count: number;
   reprint_cmt_count: number;
@@ -116,7 +88,8 @@ interface Status {
   attitude_dynamic_adid?: string;
   more_info_type: number;
   cardid?: string;
-  number_display_strategy?: {
+  extern_safe?: number;
+  number_display_strategy: {
     apply_scenario_flag: number;
     display_text_min_number: number;
     display_text: string;
@@ -135,6 +108,7 @@ interface Status {
   reprint_type: number;
   can_reprint: boolean;
   new_comment_style: number;
+  mblog_menu_new_style?: number;
   raw_text?: string;
   page_info?: {
     type: string;
@@ -164,7 +138,7 @@ interface Status {
     };
     urls?: Record<string, string>;
   };
-  pics?: {
+  pics: {
     pid: string;
     url: string;
     size: string;
@@ -184,61 +158,77 @@ interface Status {
     };
   }[];
   bid: string;
-  isTop?: number;
-  title?: {
-    text: string;
-    base_color: number;
-  };
 }
 
 interface Data {
   ok: number;
   data: {
-    user: User;
-    statuses: Status[];
-    more: string;
-    fans: string;
-    follow: string;
-    button: {
-      type: string;
-      name: string;
-      sub_type: number;
-      params: {
-        uid: string;
-      };
+    cards: {
+      card_type: number;
+      card_type_name?: string;
+      itemid?: string;
+      scheme?: string;
+      mblog?: Mblog;
+      show_type: number;
+      card_style?: number;
+      title: string;
+      card_group?: {
+        card_type: number;
+        card_type_name: string;
+        itemid: string;
+        scheme: string;
+        mblog: Mblog;
+        show_type: number;
+        title: string;
+      }[];
+    }[];
+    cardlistInfo: {
+      can_shared: number;
+      total: number;
+      show_style: number;
+      title_top: string;
+      page_type: string;
+      cardlist_head_cards: {
+        head_type: number;
+        channel_list: {
+          id: string;
+          name: string;
+          containerid: string;
+          default_add: number;
+          must_show: number;
+          apipath: string;
+        }[];
+      }[];
+      page: number;
     };
+    scheme: string;
+    showAppTips: number;
   };
 }
 
-const handler = async (
-  id: string,
-): Promise<{ summary: FeedOptions; listParams: string }> => {
+const handler = async (id: string, uid: string): Promise<Item[]> => {
   try {
-    const url = 'https://m.weibo.cn/profile/info?uid=' + id;
+    const url = 'https://m.weibo.cn/api/container/getIndex?containerid=' + id;
     const response = await instance.get<Data>(url, {
       headers: {
         'MWeibo-Pwa': 1,
-        Referer: 'https://m.weibo.cn/',
+        Referer: 'https://m.weibo.cn/u/' + uid,
         'X-Requested-With': 'XMLHttpRequest',
       },
     });
-    return {
-      summary: {
-        id: 'weibo-' + id,
-        title: response.data.data.user.screen_name,
-        generator: 'https://github.com/Feedive/feedive-serverless',
-        link: 'http://m.weibo.com/' + id,
-        description: `微博博主：@${response.data.data.user.screen_name}${
-          response.data.data.user.verified_reason
-            ? '  认证信息：' + response.data.data.user.verified_reason
-            : ''
-        }`,
-        copyright: `Copyright © ${new Date().getFullYear()} Sina`,
-      },
-      listParams: /\d+/.exec(response.data.data.more)?.[0] || '',
-    };
+    const mblogs = response.data.data.cards
+      .map((card) => card.card_group?.[0].mblog || card.mblog)
+      .filter((mblog): mblog is Mblog => !!mblog);
+    return mblogs.map((mblog) => {
+      const $ = cheerio.load(mblog.text);
+      return {
+        title: $.text().trim(),
+        link: `https://m.weibo.com/${mblog.user.id}/${mblog.bid}`,
+        date: new Date(mblog.created_at),
+      };
+    });
   } catch {
-    throw new Error(`Cannot Retrieve Weibo Summary`);
+    throw new Error(`Cannot Retrieve Weibo List`);
   }
 };
 
