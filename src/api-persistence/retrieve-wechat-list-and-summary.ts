@@ -37,7 +37,7 @@ const handler = async (
       })),
     };
   } catch {
-    throw new Error(`Cannot Retrieve Wechat Summary & List`);
+    throw new Error(`Cannot Retrieve Wechat List & Summary`);
   }
 };
 
