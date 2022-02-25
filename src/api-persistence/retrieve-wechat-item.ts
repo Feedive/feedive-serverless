@@ -15,9 +15,13 @@ const handler = async (item: Item): Promise<Item> => {
         $(img).attr('src', $(img).attr('data-src'));
       }
     }
+    const title =
+      $('meta[property="og:title"]').attr('content')?.trim() ||
+      $('meta[property="twitter:title"]').attr('content')?.trim();
     const description = $('#js_content').html()?.trim();
     return {
       ...item,
+      title: title || '',
       description: description || '',
     };
   } catch {
