@@ -1,3 +1,4 @@
+import cheerio from 'cheerio';
 import { type Item } from 'feed';
 
 interface User {
@@ -138,7 +139,7 @@ interface Data2 {
   };
 }
 
-// 投稿动态
+// 视频动态
 interface Data3 {
   aid: number;
   attribute: number;
@@ -348,11 +349,81 @@ type Data = Data0 | Data1 | Data2 | Data3 | Data4 | Data5 | Data6;
 const handler = async (item: Item): Promise<Item> => {
   try {
     const data: Data = JSON.parse(item.description || '');
-    console.log(data);
+    const text0 = (data as Data0).item?.content;
+    const text1 = (data as Data1).item?.content;
+    const text2 = (data as Data2).item?.description;
+    const text3 = (data as Data3).dynamic;
+    const text4 = (data as Data4).intro;
+    const text5 =
+      (data as Data5).category && (data as Data5).category.name + '专栏';
+    const text6 = (data as Data6).vest?.content;
+    const text =
+      text0 || text1 || text2 || text3 || text4 || text5 || text6 || '';
+    const $ = cheerio.load(text);
+    if ((data as Data2).item?.pictures) {
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      const pictures = (data as Data2).item?.pictures;
+      for (const picture of pictures) {
+        $('body').append(
+          `<img src="${picture.img_src}" referrerpolicy="no-referrer" style="margin: 4px;">`,
+        );
+      }
+    }
+    if ((data as Data3).videos) {
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      const execArray = /\/(BV\w+)$/.exec(
+        (data as Data3).short_link || (data as Data3).short_link_v2 || '',
+      );
+      const src =
+        'https://player.bilibili.com/player.html?high_quality=1&bvid=' +
+        execArray?.[1];
+      $('body').append(
+        `<a href="https://www.bilibili.com/video/${execArray?.[1]}">${
+          (data as Data3).title
+        }</a>：${(data as Data3).desc}`,
+      );
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      $('body').append(
+        `<iframe src="${src}" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>`,
+      );
+    }
+    if (((data as Data4).schema || '').startsWith('bilibili://music')) {
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      $('body').append(
+        `<a href="https://www.bilibili.com/audio/au${(data as Data4).id}">${
+          (data as Data4).title
+        }</a>：${(data as Data4).typeInfo}`,
+      );
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      $('body').append(
+        `<img src="${
+          (data as Data4).cover
+        }" referrerpolicy="no-referrer" style="margin: 4px;">`,
+      );
+    }
+    if ((data as Data5).category && (data as Data5).categories) {
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      $('body').append(
+        `<a href="https://www.bilibili.com/read/cv${(data as Data5).id}">${
+          (data as Data5).title
+        }</a>：${(data as Data5).summary}`,
+      );
+      $('body').append('<br clear="both" /><div style="clear: both;"></div>');
+      for (const src of (data as Data5).image_urls) {
+        $('body').append(
+          `<img src="${src}" referrerpolicy="no-referrer" style="margin: 4px;">`,
+        );
+      }
+    }
+    const title = text.trim() || $.text().trim();
+    const description = $('body').html()?.trim();
     return {
       ...item,
+      title: title || '',
+      description: description || '',
     };
-  } catch {
+  } catch (e) {
+    console.error(e);
     throw new Error(`Cannot Retrieve Bilibili Item`);
   }
 };
