@@ -1,4 +1,3 @@
-import cheerio from 'cheerio';
 import { type Item } from 'feed';
 import instance from './instance';
 
@@ -219,14 +218,12 @@ const handler = async (id: string, uid: string): Promise<Item[]> => {
     const mblogs = response.data.data.cards
       .map((card) => card.card_group?.[0].mblog || card.mblog)
       .filter((mblog): mblog is Mblog => !!mblog);
-    return mblogs.map((mblog) => {
-      const $ = cheerio.load(mblog.text);
-      return {
-        title: $.text().trim(),
-        link: `https://m.weibo.com/${mblog.user.id}/${mblog.bid}`,
-        date: new Date(mblog.created_at),
-      };
-    });
+    return mblogs.map((mblog) => ({
+      title: '',
+      link: `https://m.weibo.com/${mblog.user.id}/${mblog.bid}`,
+      date: new Date(mblog.created_at),
+      description: '',
+    }));
   } catch {
     throw new Error(`Cannot Retrieve Weibo List`);
   }

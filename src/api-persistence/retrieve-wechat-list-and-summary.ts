@@ -31,9 +31,10 @@ const handler = async (
         copyright: `Copyright © ${new Date().getFullYear()} Tencent`,
       },
       list: response.data.items.slice(0, 5).map((item) => ({
-        title: item.title,
+        title: '',
         link: item.url,
         date: new Date(item.date_modified),
+        description: '',
       })),
     };
   } catch {
