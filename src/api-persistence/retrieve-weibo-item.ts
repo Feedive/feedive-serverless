@@ -329,7 +329,7 @@ const handler = async (item: Item): Promise<Item> => {
     const description = $('body').html()?.trim();
     return {
       ...item,
-      title: title,
+      title: title || '',
       description: description || '',
     };
   } catch {
