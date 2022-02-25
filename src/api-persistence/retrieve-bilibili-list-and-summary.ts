@@ -1,6 +1,101 @@
 import { type FeedOptions, type Item } from 'feed';
 import instance from './instance';
 
+interface Desc {
+  uid: number;
+  type: number;
+  rid: number;
+  acl?: number;
+  view: number;
+  repost: number;
+  comment?: number;
+  like: number;
+  is_liked?: number;
+  dynamic_id: number;
+  timestamp: number;
+  pre_dy_id?: number;
+  orig_dy_id?: number;
+  orig_type?: number;
+  uid_type: number;
+  stype?: number;
+  r_type?: number;
+  inner_id?: number;
+  status: number;
+  dynamic_id_str: string;
+  pre_dy_id_str: string;
+  orig_dy_id_str: string;
+  rid_str: string;
+  bvid?: string;
+}
+
+interface User {
+  info: {
+    uid: number;
+    uname: string;
+    face: string;
+    face_nft: number;
+  };
+  card: {
+    official_verify: {
+      type: number;
+      desc: string;
+    };
+  };
+  vip: {
+    vipType: number;
+    vipDueDate: number;
+    vipStatus: number;
+    themeType: number;
+    label: {
+      path: string;
+      text: string;
+      label_theme: string;
+      text_color: string;
+      bg_style: number;
+      bg_color: string;
+      border_color: string;
+    };
+    avatar_subscript: number;
+    nickname_color: string;
+    role: number;
+    avatar_subscript_url: string;
+  };
+  pendant: {
+    pid: number;
+    name: string;
+    image: string;
+    expire: number;
+    image_enhance: string;
+    image_enhance_frame: string;
+  };
+  decorate_card?: {
+    mid: number;
+    id: number;
+    card_url: string;
+    card_type: number;
+    name: string;
+    expire_time: number;
+    card_type_name: string;
+    uid: number;
+    item_id: number;
+    item_type: number;
+    big_card_url: string;
+    jump_url: string;
+    fan: {
+      is_fan: number;
+      number: number;
+      color: string;
+      num_desc: string;
+    };
+    image_enhance: string;
+  };
+  rank: string;
+  sign: string;
+  level_info: {
+    current_level: number;
+  };
+}
+
 interface AttachCard {
   type: string;
   head_text: string;
@@ -12,10 +107,7 @@ interface AttachCard {
   jump_url: string;
   button: {
     type: number;
-    jump_style: {
-      text: string;
-    };
-    jump_url: string;
+    [key: string]: unknown;
   };
   oid_str: string;
 }
@@ -74,52 +166,7 @@ interface Display {
   attach_card?: AttachCard;
   add_on_card_info?: {
     add_on_card_show_type: number;
-    attach_card?: AttachCard;
-    reserve_attach_card?: {
-      type: string;
-      title: string;
-      state: number;
-      reserve_total: number;
-      desc_first: {
-        text: string;
-        style: number;
-      };
-      desc_second: string;
-      oid_str: string;
-      reserve_button: {
-        type: number;
-        uncheck: {
-          icon: string;
-          text: string;
-        };
-        check: {
-          icon: string;
-          text: string;
-          share: {
-            show: number;
-            icon: string;
-            text: string;
-          };
-        };
-        status: number;
-      };
-      origin_state: number;
-      stype: number;
-      livePlanStartTime: number;
-      reserve_lottery: {
-        icon: string;
-        text: string;
-        jump_url: string;
-        lottery_type: boolean;
-        share_icon: string;
-      };
-      up_mid: number;
-      user_info: {
-        name: string;
-        face: string;
-      };
-      show_desc_second: boolean;
-    };
+    [key: string]: unknown;
   }[];
   tags?: {
     tag_type: number;
@@ -143,105 +190,20 @@ interface Display {
   cover_play_icon_url?: string;
 }
 
-interface Desc {
-  uid: number;
-  type: number;
-  rid: number;
-  acl?: number;
-  view: number;
-  repost: number;
-  comment?: number;
-  like: number;
-  is_liked?: number;
-  dynamic_id: number;
-  timestamp: number;
-  pre_dy_id?: number;
-  orig_dy_id?: number;
-  orig_type?: number;
-  uid_type: number;
-  stype?: number;
-  r_type?: number;
-  inner_id?: number;
-  status: number;
-  dynamic_id_str: string;
-  pre_dy_id_str: string;
-  orig_dy_id_str: string;
-  rid_str: string;
-  bvid?: string;
-}
-
 interface Card {
   desc: Desc & {
-    user_profile: {
-      info: {
-        uid: number;
-        uname: string;
-        face: string;
-        face_nft: number;
-      };
-      card: {
-        official_verify: {
-          type: number;
-          desc: string;
-        };
-      };
-      vip: {
-        vipType: number;
-        vipDueDate: number;
-        vipStatus: number;
-        themeType: number;
-        label: {
-          path: string;
-          text: string;
-          label_theme: string;
-          text_color: string;
-          bg_style: number;
-          bg_color: string;
-          border_color: string;
-        };
-        avatar_subscript: number;
-        nickname_color: string;
-        role: number;
-        avatar_subscript_url: string;
-      };
-      pendant: {
-        pid: number;
-        name: string;
-        image: string;
-        expire: number;
-        image_enhance: string;
-        image_enhance_frame: string;
-      };
-      decorate_card?: {
-        mid: number;
-        id: number;
-        card_url: string;
-        card_type: number;
-        name: string;
-        expire_time: number;
-        card_type_name: string;
-        uid: number;
-        item_id: number;
-        item_type: number;
-        big_card_url: string;
-        jump_url: string;
-        fan: {
-          is_fan: number;
-          number: number;
-          color: string;
-          num_desc: string;
-        };
-        image_enhance: string;
-      };
-      rank: string;
-      sign: string;
-      level_info: {
-        current_level: number;
-      };
-    };
+    user_profile: User;
     origin: Desc;
   };
   card: string;
+  extension?: {
+    vote_cfg: {
+      vote_id: number;
+      desc: string;
+      join_num: number;
+    };
+    vote: string;
+  };
   extend_json: string;
   extra: {
     is_space_top: number;
