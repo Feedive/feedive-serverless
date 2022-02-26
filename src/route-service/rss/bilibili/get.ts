@@ -11,7 +11,9 @@ const handler: Handler = async (req) => {
     id,
   );
   const feed = new Feed(feedOptions);
-  for (const item of await Promise.all(list.map(retrieveBilibiliItem))) {
+  for (const item of await Promise.all(
+    list.map(({ item, itemParams }) => retrieveBilibiliItem(item, itemParams)),
+  )) {
     feed.addItem(item);
   }
   return {

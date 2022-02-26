@@ -1,6 +1,17 @@
 import cheerio from 'cheerio';
 import { type Item } from 'feed';
 
+interface ItemParams {
+  uid: number;
+  uname: string;
+  text: string;
+  emojiGroup: {
+    text: string;
+    url: string;
+  }[][];
+  origin?: Item | undefined;
+}
+
 interface User {
   info: {
     uid: number;
@@ -348,9 +359,9 @@ interface Data6 {
 
 type Data = Data0 | Data1 | Data2 | Data3 | Data4 | Data5 | Data6;
 
-const handler = async (item: Item): Promise<Item> => {
+const handler = async (item: Item, itemParams: ItemParams): Promise<Item> => {
   try {
-    const data: Data = JSON.parse(item.description || '');
+    const data: Data = JSON.parse(itemParams.text || '');
     const content0 = (data as Data0).item?.content;
     const content1 = (data as Data1).item?.content;
     const content2 = (data as Data2).item?.description;
@@ -359,15 +370,24 @@ const handler = async (item: Item): Promise<Item> => {
     const content5 =
       (data as Data5).category && (data as Data5).category.name + '专栏';
     const content6 = (data as Data6).vest?.content;
-    const content =
-      content0 ||
-      content1 ||
-      content2 ||
-      content3 ||
-      content4 ||
-      content5 ||
-      content6 ||
-      '';
+    let content =
+      `<a href="https://space.bilibili.com/${itemParams.uid}">@${itemParams.uname}</a>:` +
+      (content0 ||
+        content1 ||
+        content2 ||
+        content3 ||
+        content4 ||
+        content5 ||
+        content6 ||
+        '');
+    for (const emoji of itemParams.emojiGroup[0]) {
+      const searchValue = RegExp(
+        emoji.text.replace('[', '\\[').replace(']', '\\]'),
+        'g',
+      );
+      const replaceValue = `<img src="${emoji.url}" alt="${emoji.text}" referrerpolicy="no-referrer" style="margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;">`;
+      content = content.replace(searchValue, replaceValue);
+    }
     const $ = cheerio.load(content);
     $('body').prepend(item.title);
     if ((data as Data2).item?.pictures) {
@@ -425,15 +445,13 @@ const handler = async (item: Item): Promise<Item> => {
         );
       }
     }
-    if ((data as Data0).item?.orig_dy_id) {
+    if (itemParams.origin) {
       if (!(data as Data0).item?.miss) {
-        const subItem = await handler({
-          title: `<a href="https://space.bilibili.com/${
-            (data as Data0).origin_user?.info?.uid
-          }">@${(data as Data0).origin_user?.info?.uname}</a>:`,
-          link: item.link,
-          date: item.date,
-          description: (data as Data0).origin || '',
+        const subItem = await handler(itemParams.origin, {
+          uid: (data as Data0).origin_user?.info?.uid || 0,
+          uname: (data as Data0).origin_user?.info?.uname || '',
+          text: (data as Data0).origin || '',
+          emojiGroup: itemParams.emojiGroup.slice(1),
         });
         $('body').append(
           `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">  ${subItem.description}</blockquote>`,
