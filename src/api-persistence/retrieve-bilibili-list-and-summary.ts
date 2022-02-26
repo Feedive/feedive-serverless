@@ -260,7 +260,7 @@ const handler = async (
         let description = card.card;
         for (const emoji of card.display.emoji_info?.emoji_details || []) {
           description = description.replace(
-            RegExp(emoji.text, 'g'),
+            RegExp(emoji.text.replace('[', '\\[').replace(']', '\\]'), 'g'),
             `<img src=\\"${emoji.url}\\" alt=\\"${emoji.text}\\" referrerpolicy=\\"no-referrer\\" style=\\"margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;\\">`,
           );
         }
