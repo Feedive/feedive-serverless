@@ -255,12 +255,21 @@ const handler = async (
         }`,
         copyright: `Copyright © ${new Date().getFullYear()} Bilibili`,
       },
-      list: response.data.data.cards.map((card) => ({
-        title: '',
-        link: 'https://t.bilibili.com/' + card.desc.dynamic_id_str,
-        date: new Date(card.desc.timestamp * 1000),
-        description: card.card,
-      })),
+      list: response.data.data.cards.map((card) => {
+        let description = card.card;
+        for (const emoji of card.display.emoji_info?.emoji_details || []) {
+          description = description.replaceAll(
+            emoji.text,
+            `<img src=\\"${emoji.url}\\" alt=\\"${emoji.text}\\" referrerpolicy=\\"no-referrer\\" style=\\"margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;\\">`,
+          );
+        }
+        return {
+          title: '',
+          link: 'https://t.bilibili.com/' + card.desc.dynamic_id_str,
+          date: new Date(card.desc.timestamp * 1000),
+          description: description,
+        };
+      }),
     };
   } catch {
     throw new Error(`Cannot Retrieve Bilibili List & Summary`);
