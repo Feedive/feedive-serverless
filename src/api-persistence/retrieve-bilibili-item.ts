@@ -63,15 +63,17 @@ interface Data0 {
     orig_dy_id: number;
     pre_dy_id: number;
     timestamp: number;
+    miss?: number;
+    tips?: string;
     reply: number;
     orig_type: number;
   };
-  origin: string;
+  origin?: string;
   origin_extension?: {
     lott: string;
   };
-  origin_extend_json: string;
-  origin_user: User;
+  origin_extend_json?: string;
+  origin_user?: User;
 }
 
 // 文字动态
@@ -423,6 +425,27 @@ const handler = async (item: Item): Promise<Item> => {
         );
       }
     }
+    if ((data as Data0).item?.orig_dy_id) {
+      if (!(data as Data0).item?.miss) {
+        const subItem = await handler({
+          title: `<a href="https://space.bilibili.com/${
+            (data as Data0).origin_user?.info?.uid
+          }">@${(data as Data0).origin_user?.info?.uname}</a>:`,
+          link: item.link,
+          date: item.date,
+          description: (data as Data0).origin || '',
+        });
+        $('body').append(
+          `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">  ${subItem.description}</blockquote>`,
+        );
+      } else {
+        $('body').append(
+          `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">  ${
+            (data as Data0).item?.tips || ''
+          }</blockquote>`,
+        );
+      }
+    }
     const title = $.text().trim();
     const description = $('body').html()?.trim();
     return {
@@ -430,8 +453,7 @@ const handler = async (item: Item): Promise<Item> => {
       title: title || '',
       description: description || '',
     };
-  } catch (e) {
-    console.error(e);
+  } catch {
     throw new Error(`Cannot Retrieve Bilibili Item`);
   }
 };
