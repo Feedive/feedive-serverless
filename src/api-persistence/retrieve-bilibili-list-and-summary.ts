@@ -1,6 +1,16 @@
 import { type FeedOptions, type Item } from 'feed';
 import instance from './instance';
 
+interface ItemParams {
+  uid: number;
+  uname: string;
+  text: string;
+  emojiGroup: {
+    text: string;
+    url: string;
+  }[][];
+  origin?: Item | undefined;
+}
 interface Desc {
   uid: number;
   type: number;
@@ -193,7 +203,7 @@ interface Display {
 interface Card {
   desc: Desc & {
     user_profile: User;
-    origin: Desc;
+    origin?: Desc;
   };
   card: string;
   extension?: {
@@ -231,7 +241,13 @@ interface Data {
 
 const handler = async (
   id: string,
-): Promise<{ summary: FeedOptions; list: Item[] }> => {
+): Promise<{
+  summary: FeedOptions;
+  list: {
+    item: Item;
+    itemParams: ItemParams;
+  }[];
+}> => {
   try {
     const url =
       'https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/space_history?host_uid=' +
@@ -256,43 +272,36 @@ const handler = async (
         copyright: `Copyright © ${new Date().getFullYear()} Bilibili`,
       },
       list: response.data.data.cards.map((card) => {
-        const title = `<a href="https://space.bilibili.com/${card.desc.user_profile.info.uid}">@${card.desc.user_profile.info.uname}</a>:`;
-        let description = card.card;
-        for (const emoji of card.display.emoji_info?.emoji_details || []) {
-          const searchValue = RegExp(
-            emoji.text.replace('[', '\\[').replace(']', '\\]'),
-            'g',
-          );
-          const replaceValue = JSON.stringify(
-            `<img src="${emoji.url}" alt="${emoji.text}" referrerpolicy="no-referrer" style="margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;">`,
-          );
-          description = description.replace(
-            searchValue,
-            replaceValue.substring(1, replaceValue.length - 1),
-          );
-        }
-        for (const emoji of card.display.origin?.emoji_info?.emoji_details ||
-          []) {
-          const searchValue = RegExp(
-            emoji.text.replace('[', '\\[').replace(']', '\\]'),
-            'g',
-          );
-          const replaceValue = JSON.stringify(
-            `<img src="${emoji.url}" alt="${emoji.text}" referrerpolicy="no-referrer" style="margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;">`,
-          );
-          const newReplaceValue = JSON.stringify(
-            replaceValue.substring(1, replaceValue.length - 1),
-          );
-          description = description.replace(
-            searchValue,
-            newReplaceValue.substring(1, newReplaceValue.length - 1),
-          );
-        }
         return {
-          title: title,
-          link: 'https://t.bilibili.com/' + card.desc.dynamic_id_str,
-          date: new Date(card.desc.timestamp * 1000),
-          description: description,
+          item: {
+            title: '',
+            link: 'https://t.bilibili.com/' + card.desc.dynamic_id_str,
+            date: new Date(card.desc.timestamp * 1000),
+            description: '',
+          },
+          itemParams: {
+            uid: card.desc.user_profile.info.uid,
+            uname: card.desc.user_profile.info.uname,
+            text: card.card || '',
+            emojiGroup: [
+              (card.display.emoji_info?.emoji_details || []).map((emoji) => ({
+                text: emoji.text,
+                url: emoji.url,
+              })),
+              (card.display.origin?.emoji_info?.emoji_details || []).map(
+                (emoji) => ({
+                  text: emoji.text,
+                  url: emoji.url,
+                }),
+              ),
+            ],
+            origin: card.desc.origin && {
+              title: '',
+              link: 'https://t.bilibili.com/' + card.desc.origin.dynamic_id_str,
+              date: new Date(card.desc.origin.timestamp * 1000),
+              description: '',
+            },
+          },
         };
       }),
     };
