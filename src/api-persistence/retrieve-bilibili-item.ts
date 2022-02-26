@@ -349,17 +349,24 @@ type Data = Data0 | Data1 | Data2 | Data3 | Data4 | Data5 | Data6;
 const handler = async (item: Item): Promise<Item> => {
   try {
     const data: Data = JSON.parse(item.description || '');
-    const text0 = (data as Data0).item?.content;
-    const text1 = (data as Data1).item?.content;
-    const text2 = (data as Data2).item?.description;
-    const text3 = (data as Data3).dynamic;
-    const text4 = (data as Data4).intro;
-    const text5 =
+    const content0 = (data as Data0).item?.content;
+    const content1 = (data as Data1).item?.content;
+    const content2 = (data as Data2).item?.description;
+    const content3 = (data as Data3).dynamic;
+    const content4 = (data as Data4).intro;
+    const content5 =
       (data as Data5).category && (data as Data5).category.name + '专栏';
-    const text6 = (data as Data6).vest?.content;
-    const text =
-      text0 || text1 || text2 || text3 || text4 || text5 || text6 || '';
-    const $ = cheerio.load(text);
+    const content6 = (data as Data6).vest?.content;
+    const content =
+      content0 ||
+      content1 ||
+      content2 ||
+      content3 ||
+      content4 ||
+      content5 ||
+      content6 ||
+      '';
+    const $ = cheerio.load(content);
     if ((data as Data2).item?.pictures) {
       $('body').append('<br clear="both" /><div style="clear: both;"></div>');
       const pictures = (data as Data2).item?.pictures;
@@ -378,7 +385,7 @@ const handler = async (item: Item): Promise<Item> => {
         'https://player.bilibili.com/player.html?high_quality=1&bvid=' +
         execArray?.[1];
       $('body').append(
-        `<a href="https://www.bilibili.com/video/${execArray?.[1]}">${
+        `【视频】<a href="https://www.bilibili.com/video/${execArray?.[1]}">${
           (data as Data3).title
         }</a>：${(data as Data3).desc}`,
       );
@@ -390,9 +397,9 @@ const handler = async (item: Item): Promise<Item> => {
     if (((data as Data4).schema || '').startsWith('bilibili://music')) {
       $('body').append('<br clear="both" /><div style="clear: both;"></div>');
       $('body').append(
-        `<a href="https://www.bilibili.com/audio/au${(data as Data4).id}">${
-          (data as Data4).title
-        }</a>：${(data as Data4).typeInfo}`,
+        `【电台】<a href="https://www.bilibili.com/audio/au${
+          (data as Data4).id
+        }">${(data as Data4).title}</a>：${(data as Data4).typeInfo}`,
       );
       $('body').append('<br clear="both" /><div style="clear: both;"></div>');
       $('body').append(
@@ -404,9 +411,9 @@ const handler = async (item: Item): Promise<Item> => {
     if ((data as Data5).category && (data as Data5).categories) {
       $('body').append('<br clear="both" /><div style="clear: both;"></div>');
       $('body').append(
-        `<a href="https://www.bilibili.com/read/cv${(data as Data5).id}">${
-          (data as Data5).title
-        }</a>：${(data as Data5).summary}`,
+        `【专栏】<a href="https://www.bilibili.com/read/cv${
+          (data as Data5).id
+        }">${(data as Data5).title}</a>：${(data as Data5).summary}`,
       );
       $('body').append('<br clear="both" /><div style="clear: both;"></div>');
       for (const src of (data as Data5).image_urls) {
@@ -415,7 +422,7 @@ const handler = async (item: Item): Promise<Item> => {
         );
       }
     }
-    const title = text.trim() || $.text().trim();
+    const title = $.text().trim();
     const description = $('body').html()?.trim();
     return {
       ...item,
