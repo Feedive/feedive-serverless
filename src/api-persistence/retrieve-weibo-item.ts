@@ -312,9 +312,10 @@ const handler = async (item: Item): Promise<Item> => {
       const status = response.data.data.retweeted_status;
       if (status.user) {
         const subItem = await handler({
-          title: $.text().trim(),
+          title: '',
           link: `https://m.weibo.com/${status.user.id}/${status.bid}`,
           date: new Date(status.created_at),
+          description: '',
         });
         $('body').append(
           `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">  ${subItem.description}</blockquote>`,

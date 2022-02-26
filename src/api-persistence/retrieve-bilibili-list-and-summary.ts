@@ -259,9 +259,33 @@ const handler = async (
         const title = `<a href="https://space.bilibili.com/${card.desc.user_profile.info.uid}">@${card.desc.user_profile.info.uname}</a>:`;
         let description = card.card;
         for (const emoji of card.display.emoji_info?.emoji_details || []) {
+          const searchValue = RegExp(
+            emoji.text.replace('[', '\\[').replace(']', '\\]'),
+            'g',
+          );
+          const replaceValue = JSON.stringify(
+            `<img src="${emoji.url}" alt="${emoji.text}" referrerpolicy="no-referrer" style="margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;">`,
+          );
           description = description.replace(
-            RegExp(emoji.text.replace('[', '\\[').replace(']', '\\]'), 'g'),
-            `<img src=\\"${emoji.url}\\" alt=\\"${emoji.text}\\" referrerpolicy=\\"no-referrer\\" style=\\"margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;\\">`,
+            searchValue,
+            replaceValue.substring(1, replaceValue.length - 1),
+          );
+        }
+        for (const emoji of card.display.origin?.emoji_info?.emoji_details ||
+          []) {
+          const searchValue = RegExp(
+            emoji.text.replace('[', '\\[').replace(']', '\\]'),
+            'g',
+          );
+          const replaceValue = JSON.stringify(
+            `<img src="${emoji.url}" alt="${emoji.text}" referrerpolicy="no-referrer" style="margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;">`,
+          );
+          const newReplaceValue = JSON.stringify(
+            replaceValue.substring(1, replaceValue.length - 1),
+          );
+          description = description.replace(
+            searchValue,
+            newReplaceValue.substring(1, newReplaceValue.length - 1),
           );
         }
         return {
