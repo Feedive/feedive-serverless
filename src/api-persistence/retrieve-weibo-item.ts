@@ -317,11 +317,11 @@ const handler = async (item: Item): Promise<Item> => {
           date: new Date(status.created_at),
         });
         $('body').append(
-          `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">${subItem.description}</blockquote>`,
+          `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">  ${subItem.description}</blockquote>`,
         );
       } else {
         $('body').append(
-          `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">${'[原微博不可访问]'}</blockquote>`,
+          `<blockquote style="background: #80808010;border-top: 1px solid #80808030;padding: 8px;">  ${'[原微博不可访问]'}</blockquote>`,
         );
       }
     }
