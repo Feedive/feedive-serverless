@@ -259,8 +259,8 @@ const handler = async (
         const title = `<a href="https://space.bilibili.com/${card.desc.user_profile.info.uid}">@${card.desc.user_profile.info.uname}</a>:`;
         let description = card.card;
         for (const emoji of card.display.emoji_info?.emoji_details || []) {
-          description = description.replaceAll(
-            emoji.text,
+          description = description.replace(
+            RegExp(emoji.text, 'g'),
             `<img src=\\"${emoji.url}\\" alt=\\"${emoji.text}\\" referrerpolicy=\\"no-referrer\\" style=\\"margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;\\">`,
           );
         }
