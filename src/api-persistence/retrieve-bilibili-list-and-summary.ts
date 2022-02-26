@@ -256,6 +256,7 @@ const handler = async (
         copyright: `Copyright © ${new Date().getFullYear()} Bilibili`,
       },
       list: response.data.data.cards.map((card) => {
+        const title = `<a href="https://space.bilibili.com/${card.desc.user_profile.info.uid}">@${card.desc.user_profile.info.uname}</a>:`;
         let description = card.card;
         for (const emoji of card.display.emoji_info?.emoji_details || []) {
           description = description.replaceAll(
@@ -264,7 +265,7 @@ const handler = async (
           );
         }
         return {
-          title: '',
+          title: title,
           link: 'https://t.bilibili.com/' + card.desc.dynamic_id_str,
           date: new Date(card.desc.timestamp * 1000),
           description: description,
