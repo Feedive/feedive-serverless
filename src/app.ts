@@ -8,6 +8,7 @@ import getJsonWechat from './route-service/json/wechat/get';
 import getJsonWeibo from './route-service/json/weibo/get';
 import getRssBilibili from './route-service/rss/bilibili/get';
 import getRssJavaScriptWeekly from './route-service/rss/javascript-weekly/get';
+import getRssReddit from './route-service/rss/reddit/get';
 import getRssWechat from './route-service/rss/wechat/get';
 import getRssWeibo from './route-service/rss/weibo/get';
 
@@ -21,6 +22,7 @@ app.route('GET', '/json/wechat', getJsonWechat);
 app.route('GET', '/json/weibo', getJsonWeibo);
 app.route('GET', '/rss/bilibili', getRssBilibili);
 app.route('GET', '/rss/javascript-weekly', getRssJavaScriptWeekly);
+app.route('GET', '/rss/reddit', getRssReddit);
 app.route('GET', '/rss/wechat', getRssWechat);
 app.route('GET', '/rss/weibo', getRssWeibo);
 
