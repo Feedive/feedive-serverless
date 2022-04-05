@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import { type Item } from 'feed';
 import instance from './instance';
 
@@ -9,7 +9,7 @@ const handler = async (item: Item): Promise<Item> => {
         Referer: 'https://mp.weixin.qq.com',
       },
     });
-    const $ = cheerio.load(response.data);
+    const $ = load(response.data);
     for (const img of $('img')) {
       if (!$(img).attr('src')) {
         $(img).attr('src', $(img).attr('data-src'));
