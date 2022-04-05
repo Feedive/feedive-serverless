@@ -8,5 +8,5 @@
     "owner": true
   },
   "main": "./build/index.js",
-  "watch": ["./build/index.js"]
+  "watch": ["./build"]
 }
