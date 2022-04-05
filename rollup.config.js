@@ -1,7 +1,7 @@
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const typescript = require('@rollup/plugin-typescript');
 
-export default {
+module.exports = {
   external: [
     'axios',
     'axios-retry',
