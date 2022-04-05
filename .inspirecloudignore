@@ -10,6 +10,7 @@ yarn-error.log*
 
 /.github/
 /.husky/
+/coverage/
 /src/
 /.eslintrc.json
 /.gitignore
