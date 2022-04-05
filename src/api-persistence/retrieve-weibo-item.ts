@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import { type Item } from 'feed';
 import instance from './instance';
 
@@ -265,7 +265,7 @@ const handler = async (item: Item): Promise<Item> => {
         'X-Requested-With': 'XMLHttpRequest',
       },
     });
-    const $ = cheerio.load(
+    const $ = load(
       (response.data.data.longText &&
         response.data.data.longText.longTextContent) ||
         response.data.data.text ||
