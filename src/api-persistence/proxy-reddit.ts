@@ -15,7 +15,7 @@ interface Data {
   }[];
 }
 
-const handler = async (id: string): Promise<HandlerResponse> => {
+const handler = async (id: string): Promise<Required<HandlerResponse>> => {
   try {
     const url = `https://www.reddit.com/r/${id}/.rss`;
     const response = await instance.get<Data>(
@@ -31,7 +31,7 @@ const handler = async (id: string): Promise<HandlerResponse> => {
       body: response.data,
     };
   } catch {
-    throw new Error(`Cannot Proxy Reddit Programming`);
+    throw new Error(`Cannot Proxy Reddit`);
   }
 };
 

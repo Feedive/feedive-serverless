@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import { load } from 'cheerio';
 import { type Item } from 'feed';
 
 interface ItemParams {
@@ -388,7 +388,7 @@ const handler = async (item: Item, itemParams: ItemParams): Promise<Item> => {
       const replaceValue = `<img src="${emoji.url}" alt="${emoji.text}" referrerpolicy="no-referrer" style="margin: -1px 1px 0 1px;display: inline-block; width: 20px; height: 20px; vertical-align: text-bottom;">`;
       content = content.replace(searchValue, replaceValue);
     }
-    const $ = cheerio.load(content);
+    const $ = load(content);
     $('body').prepend(item.title);
     if ((data as Data2).item?.pictures) {
       $('body').append('<br clear="both" /><div style="clear: both;"></div>');
