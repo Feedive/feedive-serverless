@@ -9,7 +9,7 @@ const handler: Handler = async (req) => {
   const id = url.searchParams.get('id');
   if (id === null) return { code: 400 };
   const { summary: feedOptions, listParams } = await retrieveWeiboSummary(id);
-  const list = await retrieveWeiboList(listParams, id);
+  const list = await retrieveWeiboList(id, listParams);
   const feed = new Feed(feedOptions);
   for (const item of await Promise.all(
     list.slice(0, 5).map(retrieveWeiboItem),
