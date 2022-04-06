@@ -181,7 +181,7 @@ interface Data {
         title: string;
       }[];
     }[];
-    cardlistInfo: {
+    cardlistInfo?: {
       can_shared: number;
       total: number;
       show_style: number;
@@ -200,8 +200,8 @@ interface Data {
       }[];
       page: number;
     };
-    scheme: string;
-    showAppTips: number;
+    scheme?: string;
+    showAppTips?: number;
   };
 }
 
@@ -215,6 +215,9 @@ const handler = async (id: string, listParams: string): Promise<Item[]> => {
         'X-Requested-With': 'XMLHttpRequest',
       },
     });
+    if (response.data.ok === 0) {
+      throw new Error(`Cannot Retrieve Weibo List`);
+    }
     const mblogs = response.data.data.cards
       .map((card) => card.card_group?.[0].mblog || card.mblog)
       .filter((mblog): mblog is Mblog => !!mblog);
