@@ -12,6 +12,7 @@ yarn-error.log*
 /.husky/
 /coverage/
 /src/
+/test/
 /.eslintrc.json
 /.gitignore
 /.inspirecloud.service.conf
