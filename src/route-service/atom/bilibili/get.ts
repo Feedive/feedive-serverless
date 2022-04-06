@@ -18,7 +18,7 @@ const handler: Handler = async (req) => {
   }
   return {
     headers: {
-      ['Content-Type']: 'text/xml; charset=utf-8',
+      ['Content-Type']: 'application/atom+xml; charset=utf-8',
     },
     body: feed.atom1(),
   };
