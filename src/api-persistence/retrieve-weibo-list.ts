@@ -205,13 +205,13 @@ interface Data {
   };
 }
 
-const handler = async (id: string, uid: string): Promise<Item[]> => {
+const handler = async (id: string, listParams: string): Promise<Item[]> => {
   try {
-    const url = 'https://m.weibo.cn/api/container/getIndex?containerid=' + id;
+    const url = `https://m.weibo.cn/api/container/getIndex?type=uid&value=${id}&containerid=${listParams}`;
     const response = await instance.get<Data>(url, {
       headers: {
         'MWeibo-Pwa': 1,
-        Referer: 'https://m.weibo.cn/u/' + uid,
+        Referer: 'https://m.weibo.cn/u/' + id,
         'X-Requested-With': 'XMLHttpRequest',
       },
     });
