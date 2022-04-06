@@ -14,7 +14,7 @@ const handler: Handler = async (req) => {
   }
   return {
     headers: {
-      ['Content-Type']: 'text/xml; charset=utf-8',
+      ['Content-Type']: 'application/json; charset=utf-8',
     },
     body: feed.json1(),
   };
