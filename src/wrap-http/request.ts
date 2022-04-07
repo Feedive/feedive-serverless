@@ -46,6 +46,30 @@ class Request<Version extends 1 | 2 = 1> {
     }
   }
 
+  public getHeaders(): ServerRequestHeaders<Version> {
+    return this.originalValue.headers as ServerRequestHeaders<Version>;
+  }
+
+  public getMethod(): string {
+    return this.originalValue.method || '';
+  }
+
+  public getRequest(): HandlerRequest {
+    return {
+      getMethod: this.getMethod.bind(this),
+      getUrl: this.getUrl.bind(this),
+      getHeaders: this.getHeaders.bind(this),
+      getBody: this.getBody.bind(this),
+    };
+  }
+
+  public getUrl(): URL {
+    return new URL(
+      this.originalValue.url || '',
+      `${this.getUrlProtocol()}://${this.getUrlHost()}`,
+    );
+  }
+
   private async getBodyForm<Body>(): Promise<Body> {
     return new Promise((resolve, reject) => {
       form.parse(
@@ -100,30 +124,6 @@ class Request<Version extends 1 | 2 = 1> {
     if (Array.isArray(header)) return header[0].split(/\s*,\s*/, 1)[0];
     if (header) return header.split(/\s*,\s*/, 1)[0];
     return '';
-  }
-
-  public getHeaders(): ServerRequestHeaders<Version> {
-    return this.originalValue.headers as ServerRequestHeaders<Version>;
-  }
-
-  public getMethod(): string {
-    return this.originalValue.method || '';
-  }
-
-  public getRequest(): HandlerRequest {
-    return {
-      getMethod: this.getMethod.bind(this),
-      getUrl: this.getUrl.bind(this),
-      getHeaders: this.getHeaders.bind(this),
-      getBody: this.getBody.bind(this),
-    };
-  }
-
-  public getUrl(): URL {
-    return new URL(
-      this.originalValue.url || '',
-      `${this.getUrlProtocol()}://${this.getUrlHost()}`,
-    );
   }
 
   private getUrlHost(): string {
