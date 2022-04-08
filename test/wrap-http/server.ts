@@ -9,6 +9,7 @@ const instance = axios.create({
 test('server listen and close', async () => {
   const server = new Server({ secure: false, version: 1 });
   server.listen(10020);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
     const response = await instance.get('http://localhost:10020/');
     await expect(response.status).toBe(404);
@@ -32,6 +33,7 @@ test('server callback', async () => {
 test('server cors', async () => {
   const server = new Server();
   server.listen(10021);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
     const response = await instance.get('http://localhost:10021/', {
       headers: {
@@ -101,6 +103,7 @@ test('server cors', async () => {
 test('server route', async () => {
   const server = new Server();
   server.listen(10022);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
   try {
     const response = await instance.get('http://localhost:10022/');
     await expect(response.status).toBe(404);
