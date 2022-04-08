@@ -30,6 +30,30 @@ class Response<Version extends 1 | 2 = 1> {
     }
   }
 
+  public setCode(code: number): void {
+    this.originalValue.statusCode = code;
+  }
+
+  public setHeaders(headers: ServerResponseHeaders): void {
+    for (const key in headers) {
+      const value = headers[key];
+      if (value !== undefined) this.setHeader(key, value);
+    }
+  }
+
+  public setMessage(message: string): void {
+    this.originalValue.statusMessage = message;
+  }
+
+  public setResponse(res: HandlerResponse): void {
+    const { body, code, headers, message } = res;
+    if (code !== undefined) this.setCode(code);
+    if (message !== undefined) this.setMessage(message);
+    if (headers !== undefined) this.setHeaders(headers);
+    if (body !== undefined) this.setBody(body);
+    else this.setBody(null);
+  }
+
   private setBodyBuffer(value: Buffer): void {
     const res = this.originalValue;
     if (!this.originalValue.hasHeader('Content-Type')) {
@@ -87,35 +111,11 @@ class Response<Version extends 1 | 2 = 1> {
     res.end(value);
   }
 
-  public setCode(code: number): void {
-    this.originalValue.statusCode = code;
-  }
-
   private setHeader(
     name: string,
     value: string | number | readonly string[],
   ): void {
     this.originalValue.setHeader(name, value);
-  }
-
-  public setHeaders(headers: ServerResponseHeaders): void {
-    for (const key in headers) {
-      const value = headers[key];
-      if (value !== undefined) this.setHeader(key, value);
-    }
-  }
-
-  public setMessage(message: string): void {
-    this.originalValue.statusMessage = message;
-  }
-
-  public setResponse(res: HandlerResponse): void {
-    const { body, code, headers, message } = res;
-    if (code !== undefined) this.setCode(code);
-    if (message !== undefined) this.setMessage(message);
-    if (headers !== undefined) this.setHeaders(headers);
-    if (body !== undefined) this.setBody(body);
-    else this.setBody(null);
   }
 }
 
