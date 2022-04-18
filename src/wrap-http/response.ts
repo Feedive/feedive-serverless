@@ -37,7 +37,7 @@ class Response<Version extends 1 | 2 = 1> {
   public setHeaders(headers: ServerResponseHeaders): void {
     for (const key in headers) {
       const value = headers[key];
-      if (value !== undefined) this.setHeader(key, value);
+      if (value !== undefined) this.setHeadersItem(key, value);
     }
   }
 
@@ -57,9 +57,9 @@ class Response<Version extends 1 | 2 = 1> {
   private setBodyBuffer(value: Buffer): void {
     const res = this.originalValue;
     if (!this.originalValue.hasHeader('Content-Type')) {
-      this.setHeader('Content-Type', 'application/octet-stream');
+      this.setHeadersItem('Content-Type', 'application/octet-stream');
     }
-    this.setHeader('Content-Length', value.length);
+    this.setHeadersItem('Content-Length', value.length);
     res.end(value);
   }
 
@@ -68,9 +68,9 @@ class Response<Version extends 1 | 2 = 1> {
     const str = value.message || 'Internal Server Error';
     if (this.originalValue.statusCode === 200) this.setCode(500);
     if (!this.originalValue.hasHeader('Content-Type')) {
-      this.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      this.setHeadersItem('Content-Type', 'text/plain; charset=utf-8');
     }
-    this.setHeader('Content-Length', Buffer.byteLength(str));
+    this.setHeadersItem('Content-Length', Buffer.byteLength(str));
     res.end(str);
   }
 
@@ -80,9 +80,9 @@ class Response<Version extends 1 | 2 = 1> {
       return typeof value === 'bigint' ? value.toString() + 'n' : value;
     });
     if (!this.originalValue.hasHeader('Content-Type')) {
-      this.setHeader('Content-Type', 'application/json; charset=utf-8');
+      this.setHeadersItem('Content-Type', 'application/json; charset=utf-8');
     }
-    this.setHeader('Content-Length', Buffer.byteLength(str));
+    this.setHeadersItem('Content-Length', Buffer.byteLength(str));
     res.end(str);
   }
 
@@ -97,7 +97,7 @@ class Response<Version extends 1 | 2 = 1> {
   private setBodyStream(value: Stream): void {
     const res = this.originalValue;
     if (!this.originalValue.hasHeader('Content-Type')) {
-      this.setHeader('Content-Type', 'application/octet-stream');
+      this.setHeadersItem('Content-Type', 'application/octet-stream');
     }
     value.pipe(res);
   }
@@ -105,13 +105,13 @@ class Response<Version extends 1 | 2 = 1> {
   private setBodyText(value: string): void {
     const res = this.originalValue;
     if (!this.originalValue.hasHeader('Content-Type')) {
-      this.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      this.setHeadersItem('Content-Type', 'text/plain; charset=utf-8');
     }
-    this.setHeader('Content-Length', Buffer.byteLength(value));
+    this.setHeadersItem('Content-Length', Buffer.byteLength(value));
     res.end(value);
   }
 
-  private setHeader(
+  private setHeadersItem(
     name: string,
     value: string | number | readonly string[],
   ): void {
