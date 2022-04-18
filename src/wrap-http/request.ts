@@ -119,8 +119,8 @@ class Request<Version extends 1 | 2 = 1> {
     return text(this.originalValue as IncomingMessage);
   }
 
-  private getHeader(key: string): string {
-    const header = this.getHeaders()[key];
+  private getHeadersItem(name: string): string {
+    const header = this.getHeaders()[name];
     if (Array.isArray(header)) return header[0].split(/\s*,\s*/, 1)[0];
     if (header) return header.split(/\s*,\s*/, 1)[0];
     return '';
@@ -129,9 +129,9 @@ class Request<Version extends 1 | 2 = 1> {
   private getUrlHost(): string {
     const http2 = this.originalValue.httpVersionMajor >= 2;
     return (
-      this.getHeader('x-forwarded-host') ||
-      (http2 ? this.getHeader(':authority') : '') ||
-      this.getHeader('host') ||
+      this.getHeadersItem('x-forwarded-host') ||
+      (http2 ? this.getHeadersItem(':authority') : '') ||
+      this.getHeadersItem('host') ||
       'unknown'
     );
   }
@@ -140,7 +140,7 @@ class Request<Version extends 1 | 2 = 1> {
     const encrypted = Reflect.has(this.originalValue.socket, 'encrypted');
     return (
       (encrypted ? 'https' : '') ||
-      this.getHeader('x-forwarded-proto') ||
+      this.getHeadersItem('x-forwarded-proto') ||
       'http'
     );
   }
